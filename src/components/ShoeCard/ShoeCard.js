@@ -29,10 +29,19 @@ const ShoeCard = ({
     ? 'on-sale'
     : isNewShoe(releaseDate)
       ? 'new-release'
-      : 'default'
+      : 'default';
 
+  const style = {
+    "on-sale": {
+      "--flag-background": '#C5295D',
+      '--line-through': 'line-through'
+    },
+    "new-release": {
+      '--flag-background': '#6868D9'
+    }
+  };
   return (
-    <Link href={`/shoe/${slug}`}>
+    <Link style={style[variant]} href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
@@ -44,8 +53,10 @@ const ShoeCard = ({
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          {salePrice && <SalePrice>{formatPrice(salePrice)}</SalePrice>}
         </Row>
       </Wrapper>
+      {variant !== 'default' && <Flag>{variant}</Flag>}
     </Link>
   );
 };
@@ -53,18 +64,29 @@ const ShoeCard = ({
 const Link = styled.a`
   text-decoration: none;
   color: inherit;
+  flex: 1 1 340px;
+  position: relative;
 `;
 
-const Wrapper = styled.article``;
+const Wrapper = styled.article`
+  border-radius: 16px 16px 4px 4px;
+  border: 1px solid transparent;
+  overflow: hidden;
+`;
 
 const ImageWrapper = styled.div`
   position: relative;
 `;
 
-const Image = styled.img``;
+const Image = styled.img`
+  display: block;
+  width: 100%;
+`;
 
 const Row = styled.div`
   font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Name = styled.h3`
@@ -72,15 +94,30 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  text-decoration: var(--line-through);
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
+  text-align: right;
 `;
 
 const SalePrice = styled.span`
   font-weight: ${WEIGHTS.medium};
   color: ${COLORS.primary};
+`;
+
+const Flag = styled.div`
+  background-color: var(--flag-background);
+  position: absolute;
+  padding: 8px 10px;
+  color: white;
+  top: 12px;
+  right: -4px;
+  border-radius: 2px;
+  font-size: calc((1rem / 16) * 14);
+  line-height: 16.44px;
 `;
 
 export default ShoeCard;
